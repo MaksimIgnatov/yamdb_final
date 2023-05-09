@@ -1,8 +1,8 @@
-from rest_framework import filters, status
-from django.shortcuts import get_object_or_404
-from django.db.models import Avg
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
@@ -10,25 +10,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Genre, Review, Title
+from users.utils import gen_token_and_send_code
 
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
-from .permissions import AdminOrReadOnly, IsOwnerOrReadOnly, IsAdmin
-from .serializers import (
-    CategorySerializer,
-    GenreSerializer,
-    TitleReadSerializer,
-    TitleCreateSerializer,
-    ReviewSerializer,
-    CommentSerializer,
-    GetAuthTokenSerializer,
-    SignUpSerializer,
-    UserProfileSerializer,
-    UserSerializer,
-)
-from users.utils import gen_token_and_send_code
-from reviews.models import Category, Genre, Title, Review
-
+from .permissions import AdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, GetAuthTokenSerializer,
+                          ReviewSerializer, SignUpSerializer,
+                          TitleCreateSerializer, TitleReadSerializer,
+                          UserProfileSerializer, UserSerializer)
 
 User = get_user_model()
 
@@ -70,8 +62,7 @@ class ReviewViewSet(ModelViewSet):
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs['title_id'])
-        queryset = title.reviews.all().order_by('id')
-        return queryset
+        return title.reviews.all().order_by('id')
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs['title_id'])
@@ -85,12 +76,10 @@ class CommentViewSet(ModelViewSet):
     def get_review(self):
         title_id = self.kwargs['title_id']
         review_id = self.kwargs['review_id']
-        review = get_object_or_404(Review, pk=review_id, title_id=title_id)
-        return review
+        return get_object_or_404(Review, pk=review_id, title_id=title_id)
 
     def get_queryset(self):
-        queryset = self.get_review().comments.all().order_by('id')
-        return queryset
+        return self.get_review().comments.all().order_by('id')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,

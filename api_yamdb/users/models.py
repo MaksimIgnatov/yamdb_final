@@ -1,9 +1,8 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.db.models import CharField
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
-from django.db.models import TextChoices
+from django.db import models
+from django.db.models import CharField, TextChoices
 
 username_validator = UnicodeUsernameValidator()
 
