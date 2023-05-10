@@ -17,9 +17,6 @@ services:
       - db
     env_file:
       - ./.env
-    # stdin_open: true
-    # tty: true
-
   nginx:
     image: nginx:1.21.3-alpine
     ports:
