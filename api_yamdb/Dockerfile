@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-COPY ./templates/redoc.yaml ./static/
+COPY ./static/redoc.yaml ./static/
 
 RUN pip3 install -r requirements.txt --no-cache-dir
 
